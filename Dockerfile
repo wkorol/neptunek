@@ -31,9 +31,10 @@ RUN mkdir -p /var/www/html/var \
 # Install Composer dependencies for production
 RUN composer install --no-dev --optimize-autoloader
 
-RUN echo "listen = 0.0.0.0:${PORT}" >> /usr/local/etc/php-fpm.d/www.conf
+# Ensure PHP-FPM listens on the port provided by Heroku
+RUN sed -i 's/listen = \/run\/php\/php-fpm.sock/listen = 0.0.0.0:'${PORT}'/' /usr/local/etc/php-fpm.d/www.conf
 
-# Expose port for PHP-FPM to listen on (Heroku dynamically assigns the port)
+# Expose the port provided by Heroku
 EXPOSE ${PORT}
 
 # Start PHP-FPM
