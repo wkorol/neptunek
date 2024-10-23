@@ -33,11 +33,11 @@ RUN composer install --no-dev --optimize-autoloader
 
 # Make sure PHP-FPM listens on the port provided by Heroku
 # Make sure PHP-FPM listens on the port provided by Heroku
-RUN sed -i 's/listen = \/run\/php\/php-fpm.sock/listen = 0.0.0.0:'${PORT}'/' /usr/local/etc/php-fpm.d/www.conf \
+RUN sed -i 's/listen = \/run\/php\/php-fpm.sock/listen = 0.0.0.0:'$PORT'/' /usr/local/etc/php-fpm.d/www.conf \
     && cat /usr/local/etc/php-fpm.d/www.conf
 
 # Expose the port that Heroku dynamically provides
-EXPOSE ${PORT}
+EXPOSE $PORT
 
 # Start PHP-FPM
 CMD ["php-fpm"]
