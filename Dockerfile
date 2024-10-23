@@ -1,12 +1,10 @@
 # Use the official PHP 8.3 FPM image as the base image
 FROM php:8.3-fpm
 
-# Set the working directory inside the container
-WORKDIR /var/www/html
-
-# Install system dependencies, including Nginx
+# Install Nginx and Supervisor
 RUN apt-get update && apt-get install -y \
     nginx \
+    supervisor \
     libpng-dev \
     libjpeg-dev \
     libfreetype6-dev \
@@ -35,11 +33,14 @@ RUN composer install --no-dev --optimize-autoloader
 # Copy the Nginx configuration file
 COPY nginx/default.conf /etc/nginx/conf.d/default.conf
 
+# Copy the Supervisor configuration file
+COPY supervisor/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+
 # Make sure PHP-FPM listens on the port provided by Heroku
 RUN sed -i 's/listen = \/run\/php\/php-fpm.sock/listen = 127.0.0.1:9000/' /usr/local/etc/php-fpm.d/www.conf
 
 # Expose the port that Heroku dynamically provides
 EXPOSE ${PORT}
 
-# Command to run both Nginx and PHP-FPM
-CMD service nginx start && php-fpm
+# Start Supervisor to run both Nginx and PHP-FPM
+CMD ["supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
