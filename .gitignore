@@ -1,0 +1,40 @@
+# Symfony Standard Edition
+/vendor/
+/var/
+/public/bundles/
+/node_modules/
+/.env
+.env.local
+.env.*.local
+.phpunit.result.cache
+
+# Composer dependencies
+/composer.phar
+
+# Symfony development files
+/phpunit.xml
+/phpunit.xml.dist
+/.php_cs.cache
+
+# Logs and caches (Symfony)
+/var/log/
+/var/cache/
+/var/sessions/
+
+# IDE and Editor specific files
+/.idea/
+/.vscode/
+/*.swp
+*.iml
+*.sublime-project
+*.sublime-workspace
+
+# MacOS specific files
+.DS_Store
+
+# Docker
+docker-compose.yml
+docker-compose.override.yml
+docker-sync.yml
+docker-sync.yml.lock
+
