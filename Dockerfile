@@ -20,21 +20,20 @@ RUN apt-get update && apt-get install -y \
 # Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Copy the application files into the container
+# Copy application files into the container
 COPY . /var/www/html
 
-# Set permissions for Symfony folders
-RUN chown -R www-data:www-data /var/www/html/var \
+# Ensure the var directory exists, and set correct permissions
+RUN mkdir -p /var/www/html/var \
+    && chown -R www-data:www-data /var/www/html/var \
     && chmod -R 775 /var/www/html/var
 
 # Install Composer dependencies for production
 RUN composer install --no-dev --optimize-autoloader
 
-# Ensure PHP-FPM listens on the port specified by Heroku
-RUN echo "listen = 0.0.0.0:${PORT}" >> /usr/local/etc/php-fpm.d/www.conf
-
-# Expose the port
+# Expose port for PHP-FPM to listen on (Heroku dynamically assigns the port)
 EXPOSE ${PORT}
 
 # Start PHP-FPM
 CMD ["php-fpm"]
+
