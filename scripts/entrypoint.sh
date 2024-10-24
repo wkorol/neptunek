@@ -10,7 +10,7 @@ if [ -z "$PORT" ]; then
 fi
 
 # Configure PHP-FPM to listen on the dynamic port
-sed -i 's/listen = \/run\/php\/php-fpm.sock/listen = 0.0.0.0:'${PORT}'/' /usr/local/etc/php-fpm.d/www.conf
+sed -i 's/listen = \/run\/php\/php-fpm.sock/listen = 0.0.0.0:8080'/' /usr/local/etc/php-fpm.d/www.conf
 
 # Display the updated configuration for debugging
 cat /usr/local/etc/php-fpm.d/www.conf

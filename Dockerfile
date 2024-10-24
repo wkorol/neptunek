@@ -36,7 +36,7 @@ COPY scripts/entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN chmod +x /usr/local/bin/entrypoint.sh
 
 # Expose a default port (e.g., 8080)
-EXPOSE ${PORT}
+EXPOSE 8080
 
 # Use the entrypoint script to start PHP-FPM
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
