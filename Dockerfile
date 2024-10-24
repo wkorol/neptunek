@@ -35,8 +35,8 @@ RUN composer install --no-dev --optimize-autoloader
 COPY scripts/entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN chmod +x /usr/local/bin/entrypoint.sh
 
-# Expose the port that Heroku dynamically provides
-EXPOSE $PORT
+# Expose a default port (e.g., 8080)
+EXPOSE 8080
 
 # Use the entrypoint script to start PHP-FPM
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
