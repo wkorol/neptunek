@@ -35,5 +35,8 @@ RUN composer install --no-dev --optimize-autoloader
 COPY scripts/entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN chmod +x /usr/local/bin/entrypoint.sh
 
+# Log to check if $PORT is available
+RUN echo "Docker build complete. Checking PORT: ${PORT}"
+
 # Use the entrypoint script to start PHP-FPM
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
