@@ -29,7 +29,7 @@ ENV APP_SECRET=your-secret-key
 ENV DATABASE_URL="postgresql://user:password@localhost:5432/dbname"
 
 # Update PHP-FPM to listen on the dynamic $PORT provided by Heroku
-RUN sed -i 's/listen = 127.0.0.1:9000 .*/listen = 0.0.0.0:$PORT/' /usr/local/etc/php-fpm.d/www.conf
+RUN sed -i 's/listen = .*/listen = 0.0.0.0:$PORT/' /usr/local/etc/php-fpm.d/www.conf
 
 # Start PHP-FPM
 CMD ["php-fpm"]
