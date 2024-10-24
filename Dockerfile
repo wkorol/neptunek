@@ -1,42 +1,33 @@
-# Use the official PHP 8.3 FPM image as the base image
-FROM php:8.3-fpm
-
-# Set the working directory inside the container
-WORKDIR /var/www/html
+# Use the official PHP image as the base image
+FROM php:8.1-fpm
 
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
-    libpng-dev \
-    libjpeg-dev \
-    libfreetype6-dev \
+    libicu-dev \
     libonig-dev \
     libzip-dev \
     unzip \
     git \
     curl \
-    && docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install pdo pdo_mysql mbstring exif pcntl bcmath gd zip
+    && docker-php-ext-install intl opcache pdo pdo_mysql zip mbstring
 
-# Install Composer
+# Install Composer globally
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Copy application files into the container
-COPY . /var/www/html
+# Set the working directory
+WORKDIR /var/www/symfony
 
-# Ensure the var directory exists, and set correct permissions
-RUN mkdir -p /var/www/html/var \
-    && chown -R www-data:www-data /var/www/html/var \
-    && chmod -R 775 /var/www/html/var
+# Copy the project files to the container
+COPY . .
 
-# Install Composer dependencies for production
+# Install Symfony dependencies
 RUN composer install --no-dev --optimize-autoloader
 
-# Copy entrypoint script
-COPY scripts/entrypoint.sh /usr/local/bin/entrypoint.sh
-RUN chmod +x /usr/local/bin/entrypoint.sh
+# Set permissions for Symfony var directory
+RUN chown -R www-data:www-data /var/www/symfony/var
 
-# Log to check if $PORT is available
-RUN echo "Docker build complete. Checking PORT: ${PORT}"
+# Expose the port that PHP-FPM will run on
+EXPOSE 9000
 
-# Use the entrypoint script to start PHP-FPM
-ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
+# Start the PHP-FPM service
+CMD ["php-fpm"]
