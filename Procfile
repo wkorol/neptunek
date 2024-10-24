@@ -1,1 +1,1 @@
-web: symfony server:start --port $PORT --no-tls
+web: php-fpm -F
