@@ -1,33 +1,35 @@
-# Use the official PHP image as the base image
+# Use the official PHP image with FPM
 FROM php:8.3-fpm
 
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
-    libicu-dev \
-    libonig-dev \
-    libzip-dev \
-    unzip \
     git \
-    curl \
-    && docker-php-ext-install intl opcache pdo pdo_mysql zip mbstring
+    unzip \
+    libicu-dev \
+    libzip-dev \
+    libonig-dev \
+    libpq-dev \
+    && docker-php-ext-install pdo pdo_pgsql zip intl
 
-# Install Composer globally
+# Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Set the working directory
-WORKDIR /var/www/symfony
+# Set working directory
+WORKDIR /var/www/html
 
-# Copy the project files to the container
+# Copy the Symfony project files
 COPY . .
 
 # Install Symfony dependencies
-RUN composer install --no-dev --optimize-autoloader
+RUN composer install --no-interaction --optimize-autoloader --no-dev
 
-# Set permissions for Symfony var directory
-RUN chown -R www-data:www-data /var/www/symfony/var
+# Set up environment variables
+ENV APP_ENV=prod
+ENV APP_SECRET=your-secret-key
+ENV DATABASE_URL="postgresql://user:password@localhost:5432/dbname"
 
-# Expose the port that PHP-FPM will run on
-EXPOSE 9000
+# Expose port 8000 for Heroku (Heroku will map it to the dynamic port)
+EXPOSE 8000
 
-# Start the PHP-FPM service
-CMD ["php-fpm"]
+# Heroku provides a dynamic port that you should bind to
+CMD symfony server:start --port $PORT --no-tls
